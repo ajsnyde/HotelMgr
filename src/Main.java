@@ -6,6 +6,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
@@ -15,6 +16,7 @@ public class Main {
 	private JFrame frmMainWindow;
 	private JTextField startDateField;
 	private JTextField endDateField;
+	public SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -70,7 +72,7 @@ public class Main {
 		startPanel.add(lblStartDate);
 		startDateField = new JTextField();
 		startDateField.setEnabled(false);
-		startDateField.setColumns(20);
+		startDateField.setColumns(10);
 		startPanel.add(startDateField);
 		JButton btnSelectStartDate = new JButton("Select Date!");
 		startPanel.add(btnSelectStartDate);
@@ -79,7 +81,7 @@ public class Main {
 				final SelectDate startDateDialog = new SelectDate();
 				startDateDialog.addWindowStateListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						startDateField.setText(startDateDialog.datePanel.getDate().toString());
+						startDateField.setText(dateFormat.format(startDateDialog.datePanel.getDate()));
 						startDateDialog.killSelf();
 					}
 				});
@@ -94,7 +96,7 @@ public class Main {
 
 		endDateField = new JTextField();
 		endDateField.setEnabled(false);
-		endDateField.setColumns(20);
+		endDateField.setColumns(10);
 		endPanel.add(endDateField);
 
 		JButton btnSelectEndDate = new JButton("Select Date!");
@@ -104,7 +106,7 @@ public class Main {
 				final SelectDate endDateDialog = new SelectDate();
 				endDateDialog.addWindowStateListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						endDateField.setText(endDateDialog.datePanel.getDate().toString());
+						endDateField.setText(dateFormat.format(endDateDialog.datePanel.getDate()));
 						endDateDialog.killSelf();
 					}
 				});

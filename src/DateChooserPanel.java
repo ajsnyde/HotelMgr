@@ -143,7 +143,7 @@ public class DateChooserPanel extends JPanel implements ActionListener {
      * selection.
      */
     public DateChooserPanel() {
-        this(Calendar.getInstance(), true);
+        this(Calendar.getInstance(), false);
     }
 
     /**
