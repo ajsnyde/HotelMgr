@@ -1,0 +1,7 @@
+This should be a relatively easy program; I’m purposely making it vague so you can do as much or as little as you think is necessary
+- Create a hotel reservation system in whatever language you think is appropriate
+	•	Prompt for user’s current requirements (room preference and dates of booking).
+	•	Match user’s requirements with currently available rooms. A hotel will likely have several variably priced room types – penthouse suites, large rooms with king size beds, single bed rooms, etc.
+	•	Assign a room to user and record preferences for future use.
+If you can include a recorded preference to automatically check the user into a room that fits his/her requirements on future visits, then you are really on top of the game
+If you have questions, please let me know and I will do my best to help you.
