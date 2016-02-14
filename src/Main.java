@@ -3,6 +3,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+
+import database.Database;
+
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
@@ -12,7 +15,7 @@ import javax.swing.JLabel;
 import java.awt.FlowLayout;
 
 public class Main {
-
+	boolean toggle = true;
 	private JFrame frmMainWindow;
 	private JTextField startDateField;
 	private JTextField endDateField;
@@ -22,6 +25,8 @@ public class Main {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 
+				Database database = new Database();
+				
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 				} catch (ClassNotFoundException e1) {
@@ -61,11 +66,11 @@ public class Main {
 	private void initialize() {
 		frmMainWindow = new JFrame();
 		frmMainWindow.setTitle("Main Window");
-		frmMainWindow.setBounds(100, 100, 450, 300);
+		frmMainWindow.setBounds(100, 100, 322, 316);
 		frmMainWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMainWindow.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JPanel startPanel = new JPanel();
+		final JPanel startPanel = new JPanel();
 		frmMainWindow.getContentPane().add(startPanel);
 
 		JLabel lblStartDate = new JLabel("Start Date:");
@@ -88,7 +93,7 @@ public class Main {
 			}
 		});
 
-		JPanel endPanel = new JPanel();
+		final JPanel endPanel = new JPanel();
 		frmMainWindow.getContentPane().add(endPanel);
 
 		JLabel lblEndDate = new JLabel("End Date:");
@@ -112,5 +117,20 @@ public class Main {
 				});
 			}
 		});
+		
+		JButton btnKillGuiComponents = new JButton("kill GUI components");
+		btnKillGuiComponents.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				startPanel.setVisible(toggle);
+				if(!toggle)
+					frmMainWindow.getContentPane().remove(endPanel);
+				else
+					frmMainWindow.getContentPane().add(endPanel);
+				frmMainWindow.getContentPane().repaint();
+				toggle = !toggle;
+			}
+		});
+		frmMainWindow.getContentPane().add(btnKillGuiComponents);
 	}
 }
