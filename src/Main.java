@@ -3,8 +3,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-
-import database.Database;
+import database.*;
 
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -26,6 +25,7 @@ public class Main {
 			public void run() {
 
 				Database database = new Database();
+				User user = new User("Addison", "Snyder", "123 Anywhere Blvd.");
 				
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -53,16 +53,10 @@ public class Main {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public Main() {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	private void initialize() {
 		frmMainWindow = new JFrame();
 		frmMainWindow.setTitle("Main Window");
