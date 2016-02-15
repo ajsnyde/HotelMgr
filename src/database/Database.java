@@ -15,10 +15,17 @@ public class Database {
 		loadRooms("src/data/rooms.csv");
 	}
 	
-	ArrayList<String> getRoomNames(){
+	public ArrayList<String> getRoomNames(){
 		ArrayList<String> tempRooms = new ArrayList<String>();
 		for(Room room: rooms)
 			tempRooms.add(room.name);
+		return tempRooms;
+	}
+	
+	public ArrayList<Room> getRooms(){
+		ArrayList<Room> tempRooms = new ArrayList<Room>();
+		for(Room room: rooms)
+			tempRooms.add(room);
 		return tempRooms;
 	}
 	
@@ -40,7 +47,7 @@ public class Database {
 				room.defaultPrice = Integer.parseInt(in[4]);
 				room.numBeds = Integer.parseInt(in[5]);
 				room.nonSmoke = Boolean.parseBoolean(in[6]);
-				
+				rooms.add(room);
 			}
 
 		} catch (FileNotFoundException e) {
