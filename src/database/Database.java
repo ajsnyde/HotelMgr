@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 // Normally, I'd set up a MySQL database, but for ease of use and portability, this will do...
@@ -13,6 +14,13 @@ public class Database {
 	
 	public Database(){
 		loadRooms("src/data/rooms.csv");
+		/////////////////////TESTS////////////////////////
+	
+		rooms.get(0).addReservation(new Reservation("New", "User", LocalDate.of(1,1,1), LocalDate.of(1,1,2)));
+		//rooms.get(0).reservations.add(new Reservation("New", "User", LocalDate.of(2016, 5, 15), LocalDate.of(2016, 5, 16)));
+		rooms.get(0).addReservation(new Reservation("New", "User", LocalDate.of(1,1,2), LocalDate.of(1,1,3)));
+		for(Reservation res : rooms.get(0).reservations)
+			System.out.println(res);
 	}
 	
 	public ArrayList<String> getRoomNames(){
@@ -27,6 +35,12 @@ public class Database {
 		for(Room room: rooms)
 			tempRooms.add(room);
 		return tempRooms;
+	}
+
+	boolean checkReservations(Room room, LocalDate dateStart, LocalDate dateEnd){
+		if(room.reservationValid(new Reservation("New", "User", dateStart, dateEnd)))
+			return true;
+		return false;
 	}
 	
 	void loadRooms(String fileName){ // mostly just copied - super easy
