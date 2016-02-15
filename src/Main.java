@@ -9,6 +9,11 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JLabel;
 import java.awt.FlowLayout;
@@ -18,6 +23,9 @@ public class Main {
 	private JFrame frmMainWindow;
 	private JTextField startDateField;
 	private JTextField endDateField;
+	private LocalDate endDate;
+	private LocalDate startDate;
+	
 	public SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 
 	public static void main(String[] args) {
@@ -77,10 +85,13 @@ public class Main {
 		startPanel.add(btnSelectStartDate);
 		btnSelectStartDate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				final SelectDate startDateDialog = new SelectDate();
+				SelectDate startDateDialog = new SelectDate("Checkin Date Selection");
 				startDateDialog.addWindowStateListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						startDateField.setText(dateFormat.format(startDateDialog.datePanel.getDate()));
+
+						//this line converts Date.util to LocalDate; no time needed
+						startDate = startDateDialog.datePanel.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						startDateField.setText(dateFormat.format(startDate));
 						startDateDialog.killSelf();
 					}
 				});
@@ -102,20 +113,22 @@ public class Main {
 		endPanel.add(btnSelectEndDate);
 		btnSelectEndDate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				final SelectDate endDateDialog = new SelectDate();
+				SelectDate endDateDialog = new SelectDate("Checkout Date Selection");
 				endDateDialog.addWindowStateListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						endDateField.setText(dateFormat.format(endDateDialog.datePanel.getDate()));
+						endDate = endDateDialog.datePanel.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						endDateField.setText(dateFormat.format(endDate));
 						endDateDialog.killSelf();
 					}
 				});
 			}
 		});
 		
-		JButton btnKillGuiComponents = new JButton("kill GUI components");
+		JButton btnKillGuiComponents = new JButton("Next..");
 		btnKillGuiComponents.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+					
+					
 				startPanel.setVisible(toggle);
 				if(!toggle)
 					frmMainWindow.getContentPane().remove(endPanel);

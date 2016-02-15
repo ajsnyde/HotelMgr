@@ -7,7 +7,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import java.awt.Window.Type;
 
 public class SelectDate extends JDialog {
 
@@ -17,9 +16,9 @@ public class SelectDate extends JDialog {
 	/**
 	 * Launch the application.
 	 */
-	public static void main() {
+	public static void main(String title) {
 		try {
-			SelectDate dialog = new SelectDate();
+			SelectDate dialog = new SelectDate(title);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -30,9 +29,9 @@ public class SelectDate extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public SelectDate() {
+	public SelectDate(String title) {
 		setType(Type.POPUP);
-		setTitle("Date Selection");
+		setTitle(title);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setLayout(new FlowLayout());
