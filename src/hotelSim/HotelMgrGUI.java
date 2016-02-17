@@ -15,10 +15,20 @@ import javax.swing.JSplitPane;
 import java.awt.List;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+
+import javax.swing.JTabbedPane;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class HotelMgrGUI {
 
 	private JFrame frmHotelReservationGui;
+	private LocalDate endDate;
+	private LocalDate startDate;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -62,8 +72,8 @@ public class HotelMgrGUI {
 		frmHotelReservationGui.setBounds(100, 100, 775, 643);
 		frmHotelReservationGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[]{13, 41, 97, 21, 0, 0, 0, 0};
-		gridBagLayout.rowHeights = new int[]{19, 29, 0, 87, 50, 0, 0};
+		gridBagLayout.columnWidths = new int[]{74, 41, 97, 21, 0, 0, 0, 0};
+		gridBagLayout.rowHeights = new int[]{19, 29, 0, 87, 183, 0, 0};
 		gridBagLayout.columnWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		frmHotelReservationGui.getContentPane().setLayout(gridBagLayout);
@@ -75,12 +85,12 @@ public class HotelMgrGUI {
 		gbc_lblFrom.gridy = 1;
 		frmHotelReservationGui.getContentPane().add(lblFrom, gbc_lblFrom);
 		
-		JButton btnNewButton = new JButton("startDate");
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton.gridx = 2;
-		gbc_btnNewButton.gridy = 1;
-		frmHotelReservationGui.getContentPane().add(btnNewButton, gbc_btnNewButton);
+		JButton btnStartDate = new JButton("startDate");
+		GridBagConstraints gbc_btnStartDate = new GridBagConstraints();
+		gbc_btnStartDate.insets = new Insets(0, 0, 5, 5);
+		gbc_btnStartDate.gridx = 2;
+		gbc_btnStartDate.gridy = 1;
+		frmHotelReservationGui.getContentPane().add(btnStartDate, gbc_btnStartDate);
 		
 		JLabel lblTo = new JLabel("to");
 		GridBagConstraints gbc_lblTo = new GridBagConstraints();
@@ -89,13 +99,13 @@ public class HotelMgrGUI {
 		gbc_lblTo.gridy = 1;
 		frmHotelReservationGui.getContentPane().add(lblTo, gbc_lblTo);
 		
-		JButton btnNewButton_1 = new JButton("endDate");
-		GridBagConstraints gbc_btnNewButton_1 = new GridBagConstraints();
-		gbc_btnNewButton_1.anchor = GridBagConstraints.WEST;
-		gbc_btnNewButton_1.insets = new Insets(0, 0, 5, 5);
-		gbc_btnNewButton_1.gridx = 4;
-		gbc_btnNewButton_1.gridy = 1;
-		frmHotelReservationGui.getContentPane().add(btnNewButton_1, gbc_btnNewButton_1);
+		JButton btnEndDate = new JButton("endDate");
+		GridBagConstraints gbc_btnEndDate = new GridBagConstraints();
+		gbc_btnEndDate.anchor = GridBagConstraints.WEST;
+		gbc_btnEndDate.insets = new Insets(0, 0, 5, 5);
+		gbc_btnEndDate.gridx = 4;
+		gbc_btnEndDate.gridy = 1;
+		frmHotelReservationGui.getContentPane().add(btnEndDate, gbc_btnEndDate);
 		
 		JSplitPane splitPane = new JSplitPane();
 		GridBagConstraints gbc_splitPane = new GridBagConstraints();
@@ -103,7 +113,7 @@ public class HotelMgrGUI {
 		gbc_splitPane.insets = new Insets(0, 0, 5, 5);
 		gbc_splitPane.gridheight = 2;
 		gbc_splitPane.gridwidth = 5;
-		gbc_splitPane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_splitPane.fill = GridBagConstraints.BOTH;
 		gbc_splitPane.gridx = 1;
 		gbc_splitPane.gridy = 2;
 		frmHotelReservationGui.getContentPane().add(splitPane, gbc_splitPane);
@@ -122,13 +132,41 @@ public class HotelMgrGUI {
 			e.printStackTrace();
 		}
 		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
+		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+		tabbedPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
+		gbc_tabbedPane.gridwidth = 5;
+		gbc_tabbedPane.insets = new Insets(0, 0, 5, 5);
+		gbc_tabbedPane.fill = GridBagConstraints.BOTH;
+		gbc_tabbedPane.gridx = 1;
+		gbc_tabbedPane.gridy = 4;
+		frmHotelReservationGui.getContentPane().add(tabbedPane, gbc_tabbedPane);
+		
 		JLabel label = new JLabel("", icon, JLabel.CENTER);
-		GridBagConstraints gbc_label = new GridBagConstraints();
-		gbc_label.gridwidth = 4;
-		gbc_label.insets = new Insets(0, 0, 5, 5);
-		gbc_label.gridx = 1;
-		gbc_label.gridy = 4;
-		frmHotelReservationGui.getContentPane().add(label, gbc_label);
+		tabbedPane.addTab("New tab", null, label, null);
+		
+		
+		ActionListener getDates = new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SelectDate dateDialog = new SelectDate("Date Selection");
+				dateDialog.setStartDate(btnStartDate.getText());			// Sets dates if already entered
+				dateDialog.setEndDate(btnEndDate.getText());
+				
+				dateDialog.addWindowStateListener(new ActionListener() {	// Grabs dates as window closes
+					public void actionPerformed(ActionEvent e) {
+						startDate = dateDialog.getStartDate();
+						endDate = dateDialog.getEndDate();
+						btnStartDate.setText(startDate.toString());
+						btnEndDate.setText(endDate.toString());
+						dateDialog.killSelf();
+					}
+				});
+			}
+		};
+		
+		btnStartDate.addActionListener(getDates);
+		btnEndDate.addActionListener(getDates);
 	}
 
 }
