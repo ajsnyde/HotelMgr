@@ -108,7 +108,7 @@ public class SelectDate extends JDialog {
 			startDateBox.setDate(Date.from(LocalDate.parse(in).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		}
 		catch (Exception e){
-		  System.out.println("Failure while trying to set date.");
+		  System.out.println("Failure while trying to set start date.");
 		}
 	}
 
@@ -117,7 +117,7 @@ public class SelectDate extends JDialog {
 			endDateBox.setDate(Date.from(LocalDate.parse(in).atStartOfDay(ZoneId.systemDefault()).toInstant()));
 		}
 		catch (Exception e){
-		     System.out.println("Failure while trying to set date.");
+		     System.out.println("Failure while trying to set end date.");
 		}
 	}
 }
