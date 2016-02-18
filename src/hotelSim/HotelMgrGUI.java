@@ -3,6 +3,8 @@ package hotelSim;
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.awt.GridBagLayout;
+import java.awt.Image;
+
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.imageio.ImageIO;
@@ -49,6 +51,7 @@ public class HotelMgrGUI {
 	final JTextPane descriptionTxt = new JTextPane();
 	final JLabel lblRoomName = new JLabel("Placeholder Room Type");
 	final JLabel lblPrice = new JLabel("Price per night:");
+	final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
 
 	DatabaseWrapper db = new DatabaseWrapper();
 
@@ -68,6 +71,7 @@ public class HotelMgrGUI {
 
 	public HotelMgrGUI() {
 		initialize();
+		//db.executeQuery("UPDATE [Rooms] SET [PicSuffix] = 'singleStandard'");
 		setList(roomTypeModel, "SELECT distinct [name], [price], [NonSmoke?] FROM [Rooms] ORDER BY [price], [NonSmoke?] DESC");
 		roomTypeList.setSelectedIndex(0);
 		updateLists();
@@ -87,7 +91,7 @@ public class HotelMgrGUI {
 			e1.printStackTrace();
 		} catch (IllegalAccessException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e1.printStackTrace(); 
 		} catch (UnsupportedLookAndFeelException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -151,6 +155,7 @@ public class HotelMgrGUI {
 		frmHotelReservationGui.getContentPane().add(splitPane, gbc_splitPane);
 
 		JScrollPane roomTypeScroll = new JScrollPane();
+		roomTypeScroll.setMinimumSize(new Dimension(150, 67));
 		roomTypeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		roomTypeList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -166,13 +171,7 @@ public class HotelMgrGUI {
 		roomNumScroll.setPreferredSize(new Dimension(50, 100));
 		splitPane.setRightComponent(roomNumScroll);
 
-		ImageIcon icon = new ImageIcon();
-		try {
-			icon = new ImageIcon(ImageIO.read(new File("src/database/defaultImage.jpeg")));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setLayout(null);
@@ -191,7 +190,6 @@ public class HotelMgrGUI {
 		lblRoomName.setBounds(10, 11, 389, 24);
 		panel_1.add(lblRoomName);
 
-		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
@@ -202,9 +200,6 @@ public class HotelMgrGUI {
 		gbc_tabbedPane.gridx = 1;
 		gbc_tabbedPane.gridy = 4;
 		frmHotelReservationGui.getContentPane().add(tabbedPane, gbc_tabbedPane);
-
-		JLabel label = new JLabel("", icon, JLabel.CENTER);
-		tabbedPane.addTab("New tab", null, label, null);
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
@@ -272,15 +267,36 @@ public class HotelMgrGUI {
 			lblRoomName.setText(db.getQueryResults("SELECT [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
 			lblPrice.setText("Cost per night: $" + db.getQueryResults("SELECT [price], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
 			descriptionTxt.setText(db.getQueryResults("SELECT  [description], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+			updatePics(db.getQueryResults("SELECT [PicSuffix],[name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
 		}
 		else // show all room numbers if no type is given
 			setList(roomNumModel, "SELECT [RoomNumber] FROM [Rooms]");
-		
-		
-
 	}
 
 	void setList(DefaultListModel<String> listModel, String query) {
+		listModel.clear();
+		for (ArrayList<String> results : db.getQueryResults(query)) {
+			listModel.addElement(results.get(0));
+		}
+	}
+	
+	void updatePics(String picSuffix) {
+		ImageIcon icon = new ImageIcon();
+		tabbedPane.removeAll();
+		for(int i = 0; new File("src/database/" + picSuffix + i + ".jpg").exists(); ++i)
+		try {
+			icon = new ImageIcon((ImageIO.read(new File("src/database/" + picSuffix + i + ".jpg")).getScaledInstance(443, 295, Image.SCALE_SMOOTH)));
+			JLabel label = new JLabel("", icon, JLabel.CENTER);
+			tabbedPane.addTab(i + "", null, label, null);
+		} catch (IOException e) {
+			System.out.println("While setting an image for " + picSuffix + " , something broke!");
+		}
+		
+		
+		
+	}
+	
+	void setPicList(DefaultListModel<String> listModel, String query) {
 		listModel.clear();
 		for (ArrayList<String> results : db.getQueryResults(query)) {
 			listModel.addElement(results.get(0));

@@ -42,4 +42,16 @@ public class DatabaseWrapper {
 		}
 		return output;
 	}
+	
+	void executeQuery(String query){
+		try {
+		//dbCon = DriverManager.getConnection("jdbc:ucanaccess://src/database/hotel.accdb"); // dunno when connection closes automatically
+		statement = dbCon.createStatement();
+		ResultSet results = statement.executeQuery(query);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		System.out.println("Oh snap! The SQL statement blew something up!");
+		e.printStackTrace();
+	}
+	}
 }
