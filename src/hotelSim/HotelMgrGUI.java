@@ -46,6 +46,9 @@ public class HotelMgrGUI {
 	final JList<String> roomTypeList = new JList<String>(roomTypeModel);
 	final DefaultListModel<String> roomNumModel = new DefaultListModel<String>();
 	final JList<String> roomNumList = new JList<String>(roomNumModel);
+	final JTextPane descriptionTxt = new JTextPane();
+	final JLabel lblRoomName = new JLabel("Placeholder Room Type");
+	final JLabel lblPrice = new JLabel("Price per night:");
 
 	DatabaseWrapper db = new DatabaseWrapper();
 
@@ -65,8 +68,9 @@ public class HotelMgrGUI {
 
 	public HotelMgrGUI() {
 		initialize();
-		updateLists();
 		setList(roomTypeModel, "SELECT distinct [name], [price], [NonSmoke?] FROM [Rooms] ORDER BY [price], [NonSmoke?] DESC");
+		roomTypeList.setSelectedIndex(0);
+		updateLists();
 		//System.out.println(db.getQueryResults("SELECT [startDate], [endDate] FROM [Reservations]"));
 		// FROM [Rooms] WHERE [roomNumber] > 100"));
 	}
@@ -90,8 +94,9 @@ public class HotelMgrGUI {
 		}
 
 		frmHotelReservationGui = new JFrame();
+		frmHotelReservationGui.setMinimumSize(new Dimension(800, 505));
 		frmHotelReservationGui.setTitle("Hotel Reservation GUI");
-		frmHotelReservationGui.setBounds(100, 100, 900, 500);
+		frmHotelReservationGui.setBounds(100, 100, 800, 505);
 		frmHotelReservationGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 15, 41, 97, 21, 0, 0, 0, 334, 15, 0 };
@@ -146,7 +151,6 @@ public class HotelMgrGUI {
 		frmHotelReservationGui.getContentPane().add(splitPane, gbc_splitPane);
 
 		JScrollPane roomTypeScroll = new JScrollPane();
-		roomTypeScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		roomTypeList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		roomTypeList.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -180,14 +184,12 @@ public class HotelMgrGUI {
 		gbc_panel_1.gridy = 2;
 		frmHotelReservationGui.getContentPane().add(panel_1, gbc_panel_1);
 		
-		JLabel lblNewLabel = new JLabel("Price per night:");
-		lblNewLabel.setBounds(10, 28, 136, 24);
-		panel_1.add(lblNewLabel);
+		lblPrice.setBounds(10, 28, 136, 24);
+		panel_1.add(lblPrice);
 		
-		JLabel lblPlaceholderRoomType = new JLabel("Placeholder Room Type");
-		lblPlaceholderRoomType.setFont(new Font("Cambria Math", Font.PLAIN, 20));
-		lblPlaceholderRoomType.setBounds(10, 11, 389, 24);
-		panel_1.add(lblPlaceholderRoomType);
+		lblRoomName.setFont(new Font("Cambria Math", Font.PLAIN, 20));
+		lblRoomName.setBounds(10, 11, 389, 24);
+		panel_1.add(lblRoomName);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -216,12 +218,12 @@ public class HotelMgrGUI {
 		frmHotelReservationGui.getContentPane().add(panel, gbc_panel);
 		panel.setLayout(new BorderLayout(0, 0));
 		
-		JTextPane txtpnloremIpsumDolor = new JTextPane();
-		txtpnloremIpsumDolor.setFont(new Font("Georgia", Font.PLAIN, 11));
-		panel.add(txtpnloremIpsumDolor);
-		txtpnloremIpsumDolor.setBackground(SystemColor.control);
-		txtpnloremIpsumDolor.setEditable(false);
-		txtpnloremIpsumDolor.setText("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"");
+		
+		descriptionTxt.setFont(new Font("Georgia", Font.PLAIN, 11));
+		panel.add(descriptionTxt);
+		descriptionTxt.setBackground(SystemColor.control);
+		descriptionTxt.setEditable(false);
+		descriptionTxt.setText("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"");
 
 		ActionListener getDates = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -253,7 +255,7 @@ public class HotelMgrGUI {
 		System.out.println(selected + " is selected! Updating Lists accordingly.");
 		
 		// show room numbers of a given type
-		if (roomTypeList.getSelectedValue() != null && startDate != null && endDate != null)	
+		if (roomTypeList.getSelectedValue() != null && startDate != null && endDate != null) {	
 			// Note that the comments describe the portion of the SQL statement ABOVE
 			setList(roomNumModel, "SELECT DISTINCT [RoomNumber] FROM [Rooms], [Reservations] WHERE "
 						// In the end, I'm gonna want a list of numbers from rooms
@@ -267,8 +269,14 @@ public class HotelMgrGUI {
 					+ toSQL(endDate) + " >= [startDate])");
 					// That don't conflict with the selected date
 					// (StartDate1 <= EndDate2) and (StartDate2 <= EndDate1) dateRanges overlap if this is true
+			lblRoomName.setText(db.getQueryResults("SELECT [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+			lblPrice.setText("Cost per night: $" + db.getQueryResults("SELECT [price], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+			descriptionTxt.setText(db.getQueryResults("SELECT  [description], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+		}
 		else // show all room numbers if no type is given
 			setList(roomNumModel, "SELECT [RoomNumber] FROM [Rooms]");
+		
+		
 
 	}
 
