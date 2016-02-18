@@ -28,6 +28,13 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.ListSelectionModel;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JTextPane;
+import java.awt.Color;
+import java.awt.SystemColor;
+import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
+import java.awt.BorderLayout;
+import java.awt.Font;
 
 public class HotelMgrGUI {
 
@@ -84,17 +91,18 @@ public class HotelMgrGUI {
 
 		frmHotelReservationGui = new JFrame();
 		frmHotelReservationGui.setTitle("Hotel Reservation GUI");
-		frmHotelReservationGui.setBounds(100, 100, 775, 643);
+		frmHotelReservationGui.setBounds(100, 100, 900, 500);
 		frmHotelReservationGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
-		gridBagLayout.columnWidths = new int[] { 33, 41, 97, 21, 0, 0, 0, 0 };
-		gridBagLayout.rowHeights = new int[] { 19, 29, 87, 183, 0, 0 };
-		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.columnWidths = new int[] { 15, 41, 97, 21, 0, 0, 0, 334, 15, 0 };
+		gridBagLayout.rowHeights = new int[] { 15, 26, 58, 43, 283, 15, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
 		frmHotelReservationGui.getContentPane().setLayout(gridBagLayout);
 
 		JLabel lblFrom = new JLabel("From");
 		GridBagConstraints gbc_lblFrom = new GridBagConstraints();
+		gbc_lblFrom.fill = GridBagConstraints.VERTICAL;
 		gbc_lblFrom.insets = new Insets(0, 0, 5, 5);
 		gbc_lblFrom.gridx = 1;
 		gbc_lblFrom.gridy = 1;
@@ -102,6 +110,8 @@ public class HotelMgrGUI {
 
 		JButton btnStartDate = new JButton(startDate.toString());
 		GridBagConstraints gbc_btnStartDate = new GridBagConstraints();
+		gbc_btnStartDate.fill = GridBagConstraints.VERTICAL;
+		gbc_btnStartDate.anchor = GridBagConstraints.EAST;
 		gbc_btnStartDate.insets = new Insets(0, 0, 5, 5);
 		gbc_btnStartDate.gridx = 2;
 		gbc_btnStartDate.gridy = 1;
@@ -109,6 +119,7 @@ public class HotelMgrGUI {
 
 		JLabel lblTo = new JLabel("to");
 		GridBagConstraints gbc_lblTo = new GridBagConstraints();
+		gbc_lblTo.fill = GridBagConstraints.VERTICAL;
 		gbc_lblTo.insets = new Insets(0, 0, 5, 5);
 		gbc_lblTo.gridx = 3;
 		gbc_lblTo.gridy = 1;
@@ -116,6 +127,7 @@ public class HotelMgrGUI {
 
 		JButton btnEndDate = new JButton(endDate.toString());
 		GridBagConstraints gbc_btnEndDate = new GridBagConstraints();
+		gbc_btnEndDate.fill = GridBagConstraints.VERTICAL;
 		gbc_btnEndDate.anchor = GridBagConstraints.WEST;
 		gbc_btnEndDate.insets = new Insets(0, 0, 5, 5);
 		gbc_btnEndDate.gridx = 4;
@@ -124,6 +136,7 @@ public class HotelMgrGUI {
 
 		JSplitPane splitPane = new JSplitPane();
 		GridBagConstraints gbc_splitPane = new GridBagConstraints();
+		gbc_splitPane.gridheight = 2;
 		gbc_splitPane.anchor = GridBagConstraints.NORTH;
 		gbc_splitPane.insets = new Insets(0, 0, 5, 5);
 		gbc_splitPane.gridwidth = 5;
@@ -141,7 +154,7 @@ public class HotelMgrGUI {
 			}
 		});
 		roomTypeScroll.setViewportView(roomTypeList);
-		roomTypeScroll.setPreferredSize(new Dimension(250, 100));
+		roomTypeScroll.setPreferredSize(new Dimension(400, 100));
 		splitPane.setLeftComponent(roomTypeScroll);
 
 		JScrollPane roomNumScroll = new JScrollPane();
@@ -156,20 +169,59 @@ public class HotelMgrGUI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setLayout(null);
+		GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+		gbc_panel_1.anchor = GridBagConstraints.NORTH;
+		gbc_panel_1.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_1.fill = GridBagConstraints.BOTH;
+		gbc_panel_1.gridx = 7;
+		gbc_panel_1.gridy = 2;
+		frmHotelReservationGui.getContentPane().add(panel_1, gbc_panel_1);
+		
+		JLabel lblNewLabel = new JLabel("Price per night:");
+		lblNewLabel.setBounds(10, 28, 136, 24);
+		panel_1.add(lblNewLabel);
+		
+		JLabel lblPlaceholderRoomType = new JLabel("Placeholder Room Type");
+		lblPlaceholderRoomType.setFont(new Font("Cambria Math", Font.PLAIN, 20));
+		lblPlaceholderRoomType.setBounds(10, 11, 389, 24);
+		panel_1.add(lblPlaceholderRoomType);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
+		gbc_tabbedPane.fill = GridBagConstraints.HORIZONTAL;
+		gbc_tabbedPane.anchor = GridBagConstraints.SOUTH;
 		gbc_tabbedPane.gridwidth = 5;
 		gbc_tabbedPane.insets = new Insets(0, 0, 5, 5);
-		gbc_tabbedPane.fill = GridBagConstraints.BOTH;
 		gbc_tabbedPane.gridx = 1;
-		gbc_tabbedPane.gridy = 3;
+		gbc_tabbedPane.gridy = 4;
 		frmHotelReservationGui.getContentPane().add(tabbedPane, gbc_tabbedPane);
 
 		JLabel label = new JLabel("", icon, JLabel.CENTER);
 		tabbedPane.addTab("New tab", null, label, null);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		GridBagConstraints gbc_panel = new GridBagConstraints();
+		gbc_panel.gridheight = 2;
+		gbc_panel.anchor = GridBagConstraints.NORTH;
+		gbc_panel.insets = new Insets(0, 0, 5, 5);
+		gbc_panel.fill = GridBagConstraints.BOTH;
+		gbc_panel.gridx = 7;
+		gbc_panel.gridy = 3;
+		frmHotelReservationGui.getContentPane().add(panel, gbc_panel);
+		panel.setLayout(new BorderLayout(0, 0));
+		
+		JTextPane txtpnloremIpsumDolor = new JTextPane();
+		txtpnloremIpsumDolor.setFont(new Font("Georgia", Font.PLAIN, 11));
+		panel.add(txtpnloremIpsumDolor);
+		txtpnloremIpsumDolor.setBackground(SystemColor.control);
+		txtpnloremIpsumDolor.setEditable(false);
+		txtpnloremIpsumDolor.setText("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"");
 
 		ActionListener getDates = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
