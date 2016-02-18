@@ -204,9 +204,10 @@ public class HotelMgrGUI {
 	void updateLists() {
 		String selected = roomTypeList.getSelectedValue();
 		System.out.println(selected + " is selected! Updating Lists accordingly.");
-		if (roomTypeList.getSelectedValue() != null) // show room numbers of a
-														// given type
-			setList(roomNumModel, "SELECT [RoomNumber] FROM [Rooms] WHERE [name] = \'" + selected + "\'");
+		if (roomTypeList.getSelectedValue() != null)	// show room numbers of a given type
+			setList(roomNumModel, "SELECT DISTINCT [RoomNumber] FROM [Rooms], [Reservations] WHERE "
+					+ "[name] = \'" + selected + "\'"
+					+ " AND [RoomNumber] NOT IN (SELECT [RoomID] FROM [Reservations])");
 		else // show all room numbers if no type is given
 			setList(roomNumModel, "SELECT [RoomNumber] FROM [Rooms]");
 
