@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
 import javax.swing.JTabbedPane;
 import javax.swing.border.EtchedBorder;
 import java.awt.event.ActionListener;
@@ -33,8 +32,8 @@ import javax.swing.ScrollPaneConstants;
 public class HotelMgrGUI {
 
 	private JFrame frmHotelReservationGui;
-	private LocalDate endDate = LocalDate.MIN;
-	private LocalDate startDate = LocalDate.MAX;
+	private LocalDate endDate = LocalDate.now();
+	private LocalDate startDate = LocalDate.now();
 
 	final DefaultListModel<String> roomTypeModel = new DefaultListModel<String>();
 	final JList<String> roomTypeList = new JList<String>(roomTypeModel);
@@ -60,8 +59,8 @@ public class HotelMgrGUI {
 	public HotelMgrGUI() {
 		initialize();
 		updateLists();
-		setList(roomTypeModel, "SELECT distinct [name] FROM [Rooms]");
-		// System.out.println(db.getQueryResults("SELECT [name], [roomnumber]
+		setList(roomTypeModel, "SELECT distinct [name], [price], [NonSmoke?] FROM [Rooms] ORDER BY [price], [NonSmoke?] DESC");
+		//System.out.println(db.getQueryResults("SELECT [startDate], [endDate] FROM [Reservations]"));
 		// FROM [Rooms] WHERE [roomNumber] > 100"));
 	}
 
@@ -101,7 +100,7 @@ public class HotelMgrGUI {
 		gbc_lblFrom.gridy = 1;
 		frmHotelReservationGui.getContentPane().add(lblFrom, gbc_lblFrom);
 
-		JButton btnStartDate = new JButton("startDate");
+		JButton btnStartDate = new JButton(startDate.toString());
 		GridBagConstraints gbc_btnStartDate = new GridBagConstraints();
 		gbc_btnStartDate.insets = new Insets(0, 0, 5, 5);
 		gbc_btnStartDate.gridx = 2;
@@ -115,7 +114,7 @@ public class HotelMgrGUI {
 		gbc_lblTo.gridy = 1;
 		frmHotelReservationGui.getContentPane().add(lblTo, gbc_lblTo);
 
-		JButton btnEndDate = new JButton("endDate");
+		JButton btnEndDate = new JButton(endDate.toString());
 		GridBagConstraints gbc_btnEndDate = new GridBagConstraints();
 		gbc_btnEndDate.anchor = GridBagConstraints.WEST;
 		gbc_btnEndDate.insets = new Insets(0, 0, 5, 5);
@@ -175,22 +174,18 @@ public class HotelMgrGUI {
 		ActionListener getDates = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SelectDate dateDialog = new SelectDate("Date Selection");
-				dateDialog.setStartDate(btnStartDate.getText()); // Sets dates
-																	// if
-																	// already
-																	// entered
+				// Sets dates if already entered
+				dateDialog.setStartDate(btnStartDate.getText()); 
 				dateDialog.setEndDate(btnEndDate.getText());
-
-				dateDialog.addWindowStateListener(new ActionListener() { // Grabs
-																			// dates
-																			// as
-																			// window
-																			// closes
+				
+				// Listener grabs dates and closes window
+				dateDialog.addWindowStateListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						startDate = dateDialog.getStartDate();
 						endDate = dateDialog.getEndDate();
 						btnStartDate.setText(startDate.toString());
 						btnEndDate.setText(endDate.toString());
+						updateLists();
 						dateDialog.killSelf();
 					}
 				});
@@ -204,10 +199,22 @@ public class HotelMgrGUI {
 	void updateLists() {
 		String selected = roomTypeList.getSelectedValue();
 		System.out.println(selected + " is selected! Updating Lists accordingly.");
-		if (roomTypeList.getSelectedValue() != null)	// show room numbers of a given type
+		
+		// show room numbers of a given type
+		if (roomTypeList.getSelectedValue() != null && startDate != null && endDate != null)	
+			// Note that the comments describe the portion of the SQL statement ABOVE
 			setList(roomNumModel, "SELECT DISTINCT [RoomNumber] FROM [Rooms], [Reservations] WHERE "
+						// In the end, I'm gonna want a list of numbers from rooms
 					+ "[name] = \'" + selected + "\'"
-					+ " AND [RoomNumber] NOT IN (SELECT [RoomID] FROM [Reservations])");
+					// That matches the type of room selected on the left panel
+					+ " AND [RoomNumber] NOT IN "
+					// And not in the following subgroup
+					+ "(SELECT [RoomID] FROM [Reservations] WHERE "
+					// Grab roomNumbers from Reservations
+					+ toSQL(startDate) + " <= [endDate] AND"
+					+ toSQL(endDate) + " >= [startDate])");
+					// That don't conflict with the selected date
+					// (StartDate1 <= EndDate2) and (StartDate2 <= EndDate1) dateRanges overlap if this is true
 		else // show all room numbers if no type is given
 			setList(roomNumModel, "SELECT [RoomNumber] FROM [Rooms]");
 
@@ -218,5 +225,9 @@ public class HotelMgrGUI {
 		for (ArrayList<String> results : db.getQueryResults(query)) {
 			listModel.addElement(results.get(0));
 		}
+	}
+	
+	String toSQL(LocalDate in) {	// quick little helper class to clean things up a bit
+		return "'" + in + " 00:00:00.000000'";
 	}
 }
