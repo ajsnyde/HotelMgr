@@ -37,6 +37,11 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 import java.awt.BorderLayout;
 import java.awt.Font;
+import java.awt.FlowLayout;
+import javax.swing.JTextField;
+import javax.swing.JPasswordField;
+import java.awt.Component;
+import javax.swing.SwingConstants;
 
 public class HotelMgrGUI {
 
@@ -52,8 +57,12 @@ public class HotelMgrGUI {
 	final JLabel lblRoomName = new JLabel("Placeholder Room Type");
 	final JLabel lblPrice = new JLabel("Price per night:");
 	final JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.RIGHT);
-
+	ActionListener logout = null;
+	ActionListener login = null;
+	
 	DatabaseWrapper db = new DatabaseWrapper();
+	private JTextField fieldUsername;
+	private JPasswordField fieldPassword;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -142,6 +151,48 @@ public class HotelMgrGUI {
 		gbc_btnEndDate.gridx = 4;
 		gbc_btnEndDate.gridy = 1;
 		frmHotelReservationGui.getContentPane().add(btnEndDate, gbc_btnEndDate);
+		
+		JPanel panel_2 = new JPanel();
+		panel_2.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
+		flowLayout.setVgap(1);
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+		gbc_panel_2.fill = GridBagConstraints.BOTH;
+		gbc_panel_2.anchor = GridBagConstraints.EAST;
+		gbc_panel_2.gridwidth = 3;
+		gbc_panel_2.insets = new Insets(0, 0, 5, 5);
+		gbc_panel_2.gridx = 5;
+		gbc_panel_2.gridy = 1;
+		frmHotelReservationGui.getContentPane().add(panel_2, gbc_panel_2);
+		
+		JLabel lblUsername = new JLabel("Username:");
+		panel_2.add(lblUsername);
+		
+		fieldUsername = new JTextField();
+		fieldUsername.setText("ajsnyde");
+		panel_2.add(fieldUsername);
+		fieldUsername.setColumns(7);
+		
+		JLabel lblPassword = new JLabel("Password:");
+		panel_2.add(lblPassword);
+		
+		fieldPassword = new JPasswordField();
+		fieldPassword.setColumns(6);
+		panel_2.add(fieldPassword);
+		
+		JLabel lblStatus = new JLabel("Not logged in!");
+		lblStatus.setForeground(new Color(130,130,0));
+		panel_2.add(lblStatus);
+		
+		JButton btnLogin = new JButton("Login");
+		btnLogin.setMargin(new Insets(1, 5, 1, 5));
+		
+		panel_2.add(btnLogin);
+		
+		JButton button = new JButton("Create Account");
+		button.setMargin(new Insets(1, 5, 1, 5));
+		panel_2.add(button);
 
 		JSplitPane splitPane = new JSplitPane();
 		GridBagConstraints gbc_splitPane = new GridBagConstraints();
@@ -220,6 +271,40 @@ public class HotelMgrGUI {
 		descriptionTxt.setEditable(false);
 		descriptionTxt.setText("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"");
 
+		
+		login = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(login(fieldUsername.getText(), String.valueOf(fieldPassword.getPassword()))) {
+					lblStatus.setText("Logged in!");
+					lblStatus.setForeground(new Color(0,130,0));
+					fieldPassword.setEnabled(false);
+					fieldUsername.setEnabled(false);
+					btnLogin.setText("Logout");
+					btnLogin.addActionListener(logout);
+					btnLogin.removeActionListener(this);
+				}
+				else {
+					lblStatus.setText("Bad credentials!");
+					lblStatus.setForeground(new Color(255,0,0));
+				}
+				fieldPassword.setText("");
+			}
+		};
+		
+		btnLogin.addActionListener(login);
+		
+		logout = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lblStatus.setText("Not logged in!");
+				lblStatus.setForeground(new Color(130,130,0));
+				fieldPassword.setEnabled(true);
+				fieldUsername.setEnabled(true);
+				btnLogin.setText("Login");
+				btnLogin.addActionListener(login);
+				btnLogin.removeActionListener(this);
+			}
+		};
+		
 		ActionListener getDates = new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SelectDate dateDialog = new SelectDate("Date Selection");
@@ -291,9 +376,19 @@ public class HotelMgrGUI {
 		} catch (IOException e) {
 			System.out.println("While setting an image for " + picSuffix + " , something broke!");
 		}
+	}
+	
+	
+	boolean login(String username, String password) {
+		System.out.println(fieldPassword.getPassword());
 		
+		System.out.println(db.getQueryResults("Select [Username],[Password] FROM [customers] WHERE [username] = '" + username + "'"
+				+ " AND [password] = '" + password + "'"));
 		
-		
+		if(!db.getQueryResults("Select [Username],[Password] FROM [customers] WHERE [username] = '" + username + "' "
+				+ "AND [Password] = '" + password + "'").isEmpty())
+			return true;
+		return false;
 	}
 	
 	void setPicList(DefaultListModel<String> listModel, String query) {
