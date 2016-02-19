@@ -283,11 +283,11 @@ public class HotelMgrGUI {
 	void updatePics(String picSuffix) {
 		ImageIcon icon = new ImageIcon();
 		tabbedPane.removeAll();
-		for(int i = 0; new File("src/database/" + picSuffix + i + ".jpg").exists(); ++i)
+		for(int i = 0; new File("src/pictures/" + picSuffix + i + ".jpg").exists(); ++i)
 		try {
-			icon = new ImageIcon((ImageIO.read(new File("src/database/" + picSuffix + i + ".jpg")).getScaledInstance(443, 295, Image.SCALE_SMOOTH)));
+			icon = new ImageIcon((ImageIO.read(new File("src/pictures/" + picSuffix + i + ".jpg")).getScaledInstance(443, 295, Image.SCALE_FAST)));
 			JLabel label = new JLabel("", icon, JLabel.CENTER);
-			tabbedPane.addTab(i + "", null, label, null);
+			tabbedPane.addTab(i+1 + "", null, label, null);
 		} catch (IOException e) {
 			System.out.println("While setting an image for " + picSuffix + " , something broke!");
 		}
