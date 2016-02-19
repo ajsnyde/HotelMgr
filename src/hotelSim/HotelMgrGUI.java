@@ -4,7 +4,6 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 import javax.imageio.ImageIO;
@@ -29,7 +28,6 @@ import java.awt.Dimension;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.ListSelectionModel;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.JTextPane;
 import java.awt.Color;
 import java.awt.SystemColor;
@@ -40,8 +38,8 @@ import java.awt.Font;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import java.awt.Component;
-import javax.swing.SwingConstants;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class HotelMgrGUI {
 
@@ -178,6 +176,7 @@ public class HotelMgrGUI {
 		panel_2.add(lblPassword);
 		
 		fieldPassword = new JPasswordField();
+
 		fieldPassword.setColumns(6);
 		panel_2.add(fieldPassword);
 		
@@ -191,6 +190,11 @@ public class HotelMgrGUI {
 		panel_2.add(btnLogin);
 		
 		JButton button = new JButton("Create Account");
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AccountCreator accountCreator = new AccountCreator(db);
+			}
+		});
 		button.setMargin(new Insets(1, 5, 1, 5));
 		panel_2.add(button);
 
@@ -271,6 +275,13 @@ public class HotelMgrGUI {
 		descriptionTxt.setEditable(false);
 		descriptionTxt.setText("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"");
 
+		fieldPassword.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_ENTER)
+					btnLogin.doClick();
+			}
+		});
 		
 		login = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
