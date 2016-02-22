@@ -5,6 +5,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridBagLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import javax.swing.JTextField;
 import java.awt.Insets;
@@ -19,6 +21,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -237,9 +240,14 @@ public class AccountCreator extends JFrame {
 						&& checkLblNorm(lblEmail)
 						&& checkLblNorm(lblPassword)) {
 					System.out.println("Creating account!");
-					createAccount(txtFirstName.getText(), txtLastName.getText(), txtUsername.getText(),
+					if(db.newUser(txtFirstName.getText(), txtLastName.getText(), txtUsername.getText(),
 							String.valueOf(txtPassword.getPassword()), txtPhone.getText(), txtEmail.getText(),
-							Double.parseDouble(spinnerBalance.getValue().toString()));
+							Double.parseDouble(spinnerBalance.getValue().toString()))) {
+						JOptionPane.showMessageDialog(new Frame(), "Your account has been created and is ready for use.");
+						dispose();
+					}
+					else
+						JOptionPane.showMessageDialog(new Frame(),"Account creation has failed", "Database Error", JOptionPane.WARNING_MESSAGE);
 				}
 				else { // change "create account" box light red?
 					
@@ -274,10 +282,4 @@ public class AccountCreator extends JFrame {
 		else
 			return false;
 	}
-	
-	static boolean createAccount(String firstName, String lastName, String username, String password, String phoneNum,
-			String email, double balance) {
-		return false;
-	}
-
 }

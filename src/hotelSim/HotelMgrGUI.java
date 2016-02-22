@@ -17,7 +17,10 @@ import java.awt.Insets;
 import javax.swing.JSplitPane;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EtchedBorder;
@@ -40,6 +43,7 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import javax.swing.SwingConstants;
 
 public class HotelMgrGUI {
 
@@ -58,6 +62,9 @@ public class HotelMgrGUI {
 	ActionListener logout = null;
 	ActionListener login = null;
 	
+	double pricePerNight = 0;
+	long numDays = 0;
+	
 	DatabaseWrapper db = new DatabaseWrapper();
 	private JTextField fieldUsername;
 	private JPasswordField fieldPassword;
@@ -73,14 +80,15 @@ public class HotelMgrGUI {
 				}
 			}
 		});
-
 	}
 
 	public HotelMgrGUI() {
+		
 		initialize();
 		//db.executeQuery("UPDATE [Rooms] SET [PicSuffix] = 'singleStandard'");
 		setList(roomTypeModel, "SELECT distinct [name], [price], [NonSmoke?] FROM [Rooms] ORDER BY [price], [NonSmoke?] DESC");
 		roomTypeList.setSelectedIndex(0);
+		
 		updateLists();
 		//System.out.println(db.getQueryResults("SELECT [startDate], [endDate] FROM [Reservations]"));
 		// FROM [Rooms] WHERE [roomNumber] > 100"));
@@ -105,15 +113,15 @@ public class HotelMgrGUI {
 		}
 
 		frmHotelReservationGui = new JFrame();
-		frmHotelReservationGui.setMinimumSize(new Dimension(800, 505));
+		frmHotelReservationGui.setMinimumSize(new Dimension(800, 530));
 		frmHotelReservationGui.setTitle("Hotel Reservation GUI");
-		frmHotelReservationGui.setBounds(100, 100, 800, 505);
+		frmHotelReservationGui.setBounds(100, 100, 830, 530);
 		frmHotelReservationGui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 15, 41, 97, 21, 0, 0, 0, 334, 15, 0 };
 		gridBagLayout.rowHeights = new int[] { 15, 26, 58, 43, 283, 15, 0 };
 		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
-		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
 		frmHotelReservationGui.getContentPane().setLayout(gridBagLayout);
 
 		JLabel lblFrom = new JLabel("From");
@@ -256,25 +264,45 @@ public class HotelMgrGUI {
 		gbc_tabbedPane.gridy = 4;
 		frmHotelReservationGui.getContentPane().add(tabbedPane, gbc_tabbedPane);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-		GridBagConstraints gbc_panel = new GridBagConstraints();
-		gbc_panel.gridheight = 2;
-		gbc_panel.anchor = GridBagConstraints.NORTH;
-		gbc_panel.insets = new Insets(0, 0, 5, 5);
-		gbc_panel.fill = GridBagConstraints.BOTH;
-		gbc_panel.gridx = 7;
-		gbc_panel.gridy = 3;
-		frmHotelReservationGui.getContentPane().add(panel, gbc_panel);
-		panel.setLayout(new BorderLayout(0, 0));
+		JPanel descriptionPanel = new JPanel();
+		descriptionPanel.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		GridBagConstraints gbc_descriptionPanel = new GridBagConstraints();
+		gbc_descriptionPanel.gridheight = 2;
+		gbc_descriptionPanel.anchor = GridBagConstraints.NORTH;
+		gbc_descriptionPanel.insets = new Insets(0, 0, 5, 5);
+		gbc_descriptionPanel.fill = GridBagConstraints.BOTH;
+		gbc_descriptionPanel.gridx = 7;
+		gbc_descriptionPanel.gridy = 3;
+		frmHotelReservationGui.getContentPane().add(descriptionPanel, gbc_descriptionPanel);
+		descriptionPanel.setLayout(new BorderLayout(0, 0));
 		
 		
 		descriptionTxt.setFont(new Font("Georgia", Font.PLAIN, 11));
-		panel.add(descriptionTxt);
+		descriptionPanel.add(descriptionTxt);
 		descriptionTxt.setBackground(SystemColor.control);
 		descriptionTxt.setEditable(false);
 		descriptionTxt.setText("\"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.\"");
 
+		JPanel reservationPanel = new JPanel();
+		GridBagConstraints gbc_reservationPanel = new GridBagConstraints();
+		gbc_reservationPanel.anchor = GridBagConstraints.NORTHEAST;
+		gbc_reservationPanel.insets = new Insets(0, 0, 0, 5);
+		gbc_reservationPanel.gridx = 7;
+		gbc_reservationPanel.gridy = 5;
+		frmHotelReservationGui.getContentPane().add(reservationPanel, gbc_reservationPanel);
+		
+		JLabel lblDays = new JLabel("Days: 0");
+		lblDays.setHorizontalAlignment(SwingConstants.RIGHT);
+		reservationPanel.add(lblDays);
+		
+		JLabel labelPrice = new JLabel("Total Cost: $0.00");
+		labelPrice.setHorizontalAlignment(SwingConstants.RIGHT);
+		reservationPanel.add(labelPrice);
+		
+		JButton btnReservation = new JButton("Make Reservation!");
+		btnReservation.setHorizontalAlignment(SwingConstants.RIGHT);
+		reservationPanel.add(btnReservation);
+		
 		fieldPassword.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyPressed(KeyEvent e) {
@@ -328,6 +356,8 @@ public class HotelMgrGUI {
 					public void actionPerformed(ActionEvent e) {
 						startDate = dateDialog.getStartDate();
 						endDate = dateDialog.getEndDate();
+						numDays = Math.abs(Duration.between(endDate.atTime(0, 0), startDate.atTime(0, 0)).toDays());
+						lblDays.setText("Days: " + numDays);
 						btnStartDate.setText(startDate.toString());
 						btnEndDate.setText(endDate.toString());
 						updateLists();
@@ -336,6 +366,21 @@ public class HotelMgrGUI {
 				});
 			}
 		};
+		
+		roomNumList.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				if(roomNumList.getSelectedValue() != null) {
+					labelPrice.setText("Total Cost: $" + new DecimalFormat("#0.00").format(pricePerNight*numDays));
+					
+					
+				}
+				else {
+					labelPrice.setText("Total Cost: $0.00");
+					
+				}
+				
+			}
+		});
 
 		btnStartDate.addActionListener(getDates);
 		btnEndDate.addActionListener(getDates);
@@ -361,7 +406,8 @@ public class HotelMgrGUI {
 					// That don't conflict with the selected date
 					// (StartDate1 <= EndDate2) and (StartDate2 <= EndDate1) dateRanges overlap if this is true
 			lblRoomName.setText(db.getQueryResults("SELECT [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
-			lblPrice.setText("Cost per night: $" + db.getQueryResults("SELECT [price], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+			pricePerNight = Double.parseDouble(db.getQueryResults("SELECT [price], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+			lblPrice.setText("Cost per night: $" + new DecimalFormat("#0.00").format(pricePerNight));
 			descriptionTxt.setText(db.getQueryResults("SELECT  [description], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
 			updatePics(db.getQueryResults("SELECT [PicSuffix],[name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
 		}
