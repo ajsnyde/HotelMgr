@@ -1,11 +1,13 @@
 package hotelSim;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DatabaseWrapper {
@@ -59,7 +61,7 @@ public class DatabaseWrapper {
 			preparedStatement.setString(5, String.valueOf(password));
 			preparedStatement.setString(6, phoneNum);
 			preparedStatement.setString(7, email);
-			preparedStatement .executeUpdate();
+			preparedStatement.executeUpdate();
 			return true;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -69,6 +71,72 @@ public class DatabaseWrapper {
 
 	}
 	
+	boolean newReservation(String username, String roomType, int roomNum, LocalDate startDate, LocalDate endDate, long numDays, double pricePerNight, String notes) {
+		
+		String insertTableSQL = "INSERT INTO Reservations"
+				+ "(StartDate, EndDate, Cost, Notes, CustomerID, RoomID, Days, Paid) VALUES"
+				+ "(?,?,?,?,?,?,?,?)";
+		int userID = getUserID(username);
+		if(userID == -1)	// user not found
+			return false;
+		
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = dbCon.prepareStatement(insertTableSQL);
+			preparedStatement.setDate(1, Date.valueOf(startDate));
+			preparedStatement.setDate(2, Date.valueOf(endDate));
+			preparedStatement.setDouble(3, (numDays*pricePerNight));
+			preparedStatement.setString(4, notes);
+			preparedStatement.setInt(5, getUserID(username));
+			preparedStatement.setInt(6, roomNum);
+			preparedStatement.setLong(7, numDays);
+			preparedStatement.setBoolean(8, false);
+			preparedStatement.executeUpdate();
+			
+			modifyUserBalance(userID, -numDays*pricePerNight);
+			
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	boolean modifyUserBalance(int customerID, double change) {
+		String changeBalance = "UPDATE Customers SET Balance = Balance + ? WHERE CustomerID = ?";
+				
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = dbCon.prepareStatement(changeBalance);
+			preparedStatement.setDouble(1, change);
+			preparedStatement.setInt(2, customerID);
+			preparedStatement.executeUpdate();
+			return true;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	int getUserID(String username) {
+		String selectUserSQL = "SELECT CustomerID FROM Customers WHERE Username = ?";
+		
+		PreparedStatement preparedStatement;
+		try {
+			preparedStatement = dbCon.prepareStatement(selectUserSQL);
+			preparedStatement.setString(1, username);
+			ResultSet rs = preparedStatement.executeQuery();
+			rs.next();
+			return rs.getInt(1);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return -1;
+		}
+	}
 	
 	void executeQuery(String query){
 		try {

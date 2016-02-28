@@ -85,6 +85,7 @@ public class HotelMgrGUI {
 	public HotelMgrGUI() {
 		
 		initialize();
+		
 		//db.executeQuery("UPDATE [Rooms] SET [PicSuffix] = 'singleStandard'");
 		setList(roomTypeModel, "SELECT distinct [name], [price], [NonSmoke?] FROM [Rooms] ORDER BY [price], [NonSmoke?] DESC");
 		roomTypeList.setSelectedIndex(0);
@@ -300,8 +301,45 @@ public class HotelMgrGUI {
 		reservationPanel.add(labelPrice);
 		
 		JButton btnReservation = new JButton("Make Reservation!");
+		btnReservation.setEnabled(false);
+
 		btnReservation.setHorizontalAlignment(SwingConstants.RIGHT);
 		reservationPanel.add(btnReservation);
+		
+		btnReservation.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(roomNumList.isSelectionEmpty()) {
+					if(roomNumModel.size() > 0) {
+						roomNumList.setBackground(new Color(255,255,255));
+						roomNumList.setSelectedIndex(0);
+					}
+					else {
+						roomNumList.setBackground(new Color(255,192,203));
+						return;
+					}
+				}
+				
+				if(numDays > 0) {
+					btnStartDate.setBackground(new Color(240,240,240));
+					btnEndDate.setBackground(new Color(240,240,240));
+					new ReservationConfirmation(
+						db,
+						fieldUsername.getText(),
+						roomTypeList.getSelectedValue(), 
+						Integer.parseInt(roomNumList.getSelectedValue()),
+						startDate,
+						endDate,
+						numDays,
+						pricePerNight
+						);
+					}
+				else {
+					btnStartDate.setBackground(new Color(124,9,2));
+					btnEndDate.setBackground(new Color(124,9,2));
+				}
+			}
+		});
 		
 		fieldPassword.addKeyListener(new KeyAdapter() {
 			@Override
@@ -318,6 +356,7 @@ public class HotelMgrGUI {
 					lblStatus.setForeground(new Color(0,130,0));
 					fieldPassword.setEnabled(false);
 					fieldUsername.setEnabled(false);
+					btnReservation.setEnabled(true);
 					btnLogin.setText("Logout");
 					btnLogin.addActionListener(logout);
 					btnLogin.removeActionListener(this);
@@ -335,6 +374,7 @@ public class HotelMgrGUI {
 		logout = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				lblStatus.setText("Not logged in!");
+				btnReservation.setEnabled(false);
 				lblStatus.setForeground(new Color(130,130,0));
 				fieldPassword.setEnabled(true);
 				fieldUsername.setEnabled(true);
@@ -354,13 +394,28 @@ public class HotelMgrGUI {
 				// Listener grabs dates and closes window
 				dateDialog.addWindowStateListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						startDate = dateDialog.getStartDate();
-						endDate = dateDialog.getEndDate();
+						if(dateDialog.getStartDate().isBefore(dateDialog.getEndDate())) {	// basic sanitation
+							startDate = dateDialog.getStartDate();
+							endDate = dateDialog.getEndDate();	
+						} else {
+							endDate = dateDialog.getStartDate();
+							startDate = dateDialog.getEndDate();	
+						}
+						
+						if(startDate.isBefore(LocalDate.now()))
+							startDate = LocalDate.now();
+						if(endDate.isBefore(LocalDate.now()))
+							endDate = LocalDate.now();
+						
 						numDays = Math.abs(Duration.between(endDate.atTime(0, 0), startDate.atTime(0, 0)).toDays());
 						lblDays.setText("Days: " + numDays);
 						btnStartDate.setText(startDate.toString());
 						btnEndDate.setText(endDate.toString());
 						updateLists();
+						
+						if(!roomNumModel.isEmpty())
+							roomNumList.setSelectedIndex(0);
+						
 						dateDialog.killSelf();
 					}
 				});
@@ -371,8 +426,6 @@ public class HotelMgrGUI {
 			public void valueChanged(ListSelectionEvent e) {
 				if(roomNumList.getSelectedValue() != null) {
 					labelPrice.setText("Total Cost: $" + new DecimalFormat("#0.00").format(pricePerNight*numDays));
-					
-					
 				}
 				else {
 					labelPrice.setText("Total Cost: $0.00");
@@ -410,6 +463,9 @@ public class HotelMgrGUI {
 			lblPrice.setText("Cost per night: $" + new DecimalFormat("#0.00").format(pricePerNight));
 			descriptionTxt.setText(db.getQueryResults("SELECT  [description], [name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
 			updatePics(db.getQueryResults("SELECT [PicSuffix],[name] FROM [rooms] WHERE [name] = \'" + selected + "\'").get(0).get(0));
+			
+			if(!roomNumModel.isEmpty())
+				roomNumList.setSelectedIndex(0);
 		}
 		else // show all room numbers if no type is given
 			setList(roomNumModel, "SELECT [RoomNumber] FROM [Rooms]");

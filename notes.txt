@@ -1,0 +1,7 @@
+Things to do:
+	Stop the program from resizing the images every time they change. It slows the program down too much.
+	Figure out resources - have all files accessed within the jar as resources
+	Add tooltips to everything
+	Convert all SQL statements into prepared statements. Far easier and safer.
+	Speed up SQL queries - use first and other modifiers to cut them short when possible
+	
