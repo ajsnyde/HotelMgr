@@ -44,6 +44,7 @@ import javax.swing.JPasswordField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import javax.swing.SwingConstants;
+import java.awt.Toolkit;
 
 public class HotelMgrGUI {
 
@@ -88,6 +89,7 @@ public class HotelMgrGUI {
 		
 		//db.executeQuery("UPDATE [Rooms] SET [PicSuffix] = 'singleStandard'");
 		setList(roomTypeModel, "SELECT distinct [name], [price], [NonSmoke?] FROM [Rooms] ORDER BY [price], [NonSmoke?] DESC");
+		roomTypeList.setToolTipText("Select from the following room types to display their respective room numbers and other information");
 		roomTypeList.setSelectedIndex(0);
 		
 		updateLists();
@@ -114,6 +116,7 @@ public class HotelMgrGUI {
 		}
 
 		frmHotelReservationGui = new JFrame();
+		frmHotelReservationGui.setIconImage(Toolkit.getDefaultToolkit().getImage(HotelMgrGUI.class.getResource("/pictures/hotel-icon-7505.png")));
 		frmHotelReservationGui.setMinimumSize(new Dimension(800, 530));
 		frmHotelReservationGui.setTitle("Hotel Reservation GUI");
 		frmHotelReservationGui.setBounds(100, 100, 830, 530);
@@ -134,6 +137,7 @@ public class HotelMgrGUI {
 		frmHotelReservationGui.getContentPane().add(lblFrom, gbc_lblFrom);
 
 		JButton btnStartDate = new JButton(startDate.toString());
+		btnStartDate.setToolTipText("Starting date - Check-in as early as 1:00PM");
 		GridBagConstraints gbc_btnStartDate = new GridBagConstraints();
 		gbc_btnStartDate.fill = GridBagConstraints.VERTICAL;
 		gbc_btnStartDate.anchor = GridBagConstraints.EAST;
@@ -151,6 +155,7 @@ public class HotelMgrGUI {
 		frmHotelReservationGui.getContentPane().add(lblTo, gbc_lblTo);
 
 		JButton btnEndDate = new JButton(endDate.toString());
+		btnEndDate.setToolTipText("Ending date - Check-out as late as 11:00AM");
 		GridBagConstraints gbc_btnEndDate = new GridBagConstraints();
 		gbc_btnEndDate.fill = GridBagConstraints.VERTICAL;
 		gbc_btnEndDate.anchor = GridBagConstraints.WEST;
@@ -231,6 +236,7 @@ public class HotelMgrGUI {
 		splitPane.setLeftComponent(roomTypeScroll);
 
 		JScrollPane roomNumScroll = new JScrollPane();
+		roomNumList.setToolTipText("Not seeing any numbers? The rooms are probably booked. Try changing the reservation period.");
 		roomNumScroll.setViewportView(roomNumList);
 		roomNumScroll.setPreferredSize(new Dimension(50, 100));
 		splitPane.setRightComponent(roomNumScroll);
@@ -246,6 +252,7 @@ public class HotelMgrGUI {
 		gbc_panel_1.gridx = 7;
 		gbc_panel_1.gridy = 2;
 		frmHotelReservationGui.getContentPane().add(panel_1, gbc_panel_1);
+		lblPrice.setToolTipText("\"Night\" is defined as from 1PM to 11AM the next morning.");
 		
 		lblPrice.setBounds(10, 28, 136, 24);
 		panel_1.add(lblPrice);
@@ -253,6 +260,7 @@ public class HotelMgrGUI {
 		lblRoomName.setFont(new Font("Cambria Math", Font.PLAIN, 20));
 		lblRoomName.setBounds(10, 11, 389, 24);
 		panel_1.add(lblRoomName);
+		tabbedPane.setToolTipText("Pictures of existing rooms may not reflect actual available rooms.");
 
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
 		tabbedPane.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -301,6 +309,7 @@ public class HotelMgrGUI {
 		reservationPanel.add(labelPrice);
 		
 		JButton btnReservation = new JButton("Make Reservation!");
+		btnReservation.setToolTipText("Login required to make a reservation");
 		btnReservation.setEnabled(false);
 
 		btnReservation.setHorizontalAlignment(SwingConstants.RIGHT);

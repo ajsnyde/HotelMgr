@@ -24,6 +24,7 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Toolkit;
 
 public class AccountCreator extends JFrame {
 
@@ -42,6 +43,7 @@ public class AccountCreator extends JFrame {
 	final short MIN_PASSWORD_SIZE = 5;
 	
 	public AccountCreator(DatabaseWrapper db) {
+		setIconImage(Toolkit.getDefaultToolkit().getImage(AccountCreator.class.getResource("/pictures/hotel-icon-7505.png")));
 		setMinimumSize(new Dimension(375, 179));
 		
 		try {
@@ -82,6 +84,7 @@ public class AccountCreator extends JFrame {
 		contentPane.add(lblUsername, gbc_lblUsername);
 		
 		txtUsername = new JTextField();
+		txtUsername.setToolTipText("Usernames must be at least 5 characters long, and be unique");
 		txtUsername.setMinimumSize(new Dimension(55, 20));
 		txtUsername.setColumns(10);
 		GridBagConstraints gbc_txtUsername = new GridBagConstraints();
@@ -118,6 +121,7 @@ public class AccountCreator extends JFrame {
 		contentPane.add(lblPassword, gbc_lblPassword);
 		
 		txtPassword = new JPasswordField();
+		txtPassword.setToolTipText("Password must be at least 5 characters");
 		txtPassword.setMinimumSize(new Dimension(55, 20));
 		GridBagConstraints gbc_txtPassword = new GridBagConstraints();
 		gbc_txtPassword.insets = new Insets(0, 0, 5, 5);
@@ -135,6 +139,7 @@ public class AccountCreator extends JFrame {
 		contentPane.add(lblPhone, gbc_lblPhone);
 		
 		txtPhone = new JTextField();
+		txtPhone.setToolTipText("Format: 123-456-7890");
 		txtPhone.setMinimumSize(new Dimension(40, 20));
 		txtPhone.setColumns(10);
 		GridBagConstraints gbc_txtPhoneNum = new GridBagConstraints();

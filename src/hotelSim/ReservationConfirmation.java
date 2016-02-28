@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.awt.event.ActionEvent;
 import java.awt.Insets;
 import javax.swing.JTextField;
+import java.awt.Toolkit;
 
 public class ReservationConfirmation extends JDialog {
 
@@ -27,6 +28,8 @@ public class ReservationConfirmation extends JDialog {
 	private JTextField notes;
 
 	public ReservationConfirmation(DatabaseWrapper db, String username, String roomType, int roomNum, LocalDate startDate, LocalDate endDate, long numDays, double pricePerNight) {
+		setTitle("Reservation Checkout");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(ReservationConfirmation.class.getResource("/pictures/hotel-icon-7505.png")));
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		try {
 			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
@@ -49,15 +52,15 @@ public class ReservationConfirmation extends JDialog {
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		GridBagLayout gbl_contentPanel = new GridBagLayout();
-		gbl_contentPanel.columnWidths = new int[]{0, 0, 0, 0, 0};
+		gbl_contentPanel.columnWidths = new int[]{0, 0, 0, 0, 0, 0};
 		gbl_contentPanel.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0, 0};
-		gbl_contentPanel.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+		gbl_contentPanel.columnWeights = new double[]{0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
 		gbl_contentPanel.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
 		contentPanel.setLayout(gbl_contentPanel);
 		{
 			JLabel lblPleaseConfirmThe = new JLabel("Please confirm the following data:");
 			GridBagConstraints gbc_lblPleaseConfirmThe = new GridBagConstraints();
-			gbc_lblPleaseConfirmThe.gridwidth = 2;
+			gbc_lblPleaseConfirmThe.gridwidth = 3;
 			gbc_lblPleaseConfirmThe.insets = new Insets(0, 0, 5, 5);
 			gbc_lblPleaseConfirmThe.gridx = 1;
 			gbc_lblPleaseConfirmThe.gridy = 0;
@@ -77,7 +80,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_lblRoomtype = new GridBagConstraints();
 			gbc_lblRoomtype.anchor = GridBagConstraints.WEST;
 			gbc_lblRoomtype.insets = new Insets(0, 0, 5, 5);
-			gbc_lblRoomtype.gridx = 2;
+			gbc_lblRoomtype.gridx = 3;
 			gbc_lblRoomtype.gridy = 1;
 			contentPanel.add(lblRoomtype, gbc_lblRoomtype);
 		}
@@ -95,7 +98,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_lblRoomnum = new GridBagConstraints();
 			gbc_lblRoomnum.anchor = GridBagConstraints.WEST;
 			gbc_lblRoomnum.insets = new Insets(0, 0, 5, 5);
-			gbc_lblRoomnum.gridx = 2;
+			gbc_lblRoomnum.gridx = 3;
 			gbc_lblRoomnum.gridy = 2;
 			contentPanel.add(lblRoomnum, gbc_lblRoomnum);
 		}
@@ -113,7 +116,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_lblStartdate = new GridBagConstraints();
 			gbc_lblStartdate.anchor = GridBagConstraints.WEST;
 			gbc_lblStartdate.insets = new Insets(0, 0, 5, 5);
-			gbc_lblStartdate.gridx = 2;
+			gbc_lblStartdate.gridx = 3;
 			gbc_lblStartdate.gridy = 3;
 			contentPanel.add(lblStartdate, gbc_lblStartdate);
 		}
@@ -131,7 +134,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_lblEnddate = new GridBagConstraints();
 			gbc_lblEnddate.anchor = GridBagConstraints.WEST;
 			gbc_lblEnddate.insets = new Insets(0, 0, 5, 5);
-			gbc_lblEnddate.gridx = 2;
+			gbc_lblEnddate.gridx = 3;
 			gbc_lblEnddate.gridy = 4;
 			contentPanel.add(lblEnddate, gbc_lblEnddate);
 		}
@@ -149,7 +152,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_lblNumdays = new GridBagConstraints();
 			gbc_lblNumdays.anchor = GridBagConstraints.WEST;
 			gbc_lblNumdays.insets = new Insets(0, 0, 5, 5);
-			gbc_lblNumdays.gridx = 2;
+			gbc_lblNumdays.gridx = 3;
 			gbc_lblNumdays.gridy = 5;
 			contentPanel.add(lblNumdays, gbc_lblNumdays);
 		}
@@ -167,7 +170,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_lblTotalcost = new GridBagConstraints();
 			gbc_lblTotalcost.insets = new Insets(0, 0, 5, 5);
 			gbc_lblTotalcost.anchor = GridBagConstraints.WEST;
-			gbc_lblTotalcost.gridx = 2;
+			gbc_lblTotalcost.gridx = 3;
 			gbc_lblTotalcost.gridy = 6;
 			contentPanel.add(lblTotalcost, gbc_lblTotalcost);
 		}
@@ -185,7 +188,7 @@ public class ReservationConfirmation extends JDialog {
 			GridBagConstraints gbc_notes = new GridBagConstraints();
 			gbc_notes.insets = new Insets(0, 0, 0, 5);
 			gbc_notes.fill = GridBagConstraints.HORIZONTAL;
-			gbc_notes.gridx = 2;
+			gbc_notes.gridx = 3;
 			gbc_notes.gridy = 7;
 			contentPanel.add(notes, gbc_notes);
 			notes.setColumns(10);
@@ -196,6 +199,7 @@ public class ReservationConfirmation extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton btnCheckout = new JButton("Checkout");
+				btnCheckout.setToolTipText("Checkout is final; total will be deducted from user's balance.");
 				btnCheckout.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						if(db.newReservation(username, roomType, roomNum, startDate, endDate, numDays, pricePerNight, notes.getText()))
